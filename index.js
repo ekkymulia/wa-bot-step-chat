@@ -2,6 +2,8 @@ const { DisconnectReason, useMultiFileAuthState } = require('baileys');
 const makeWASocket = require('baileys').default;
 const axios = require("axios");
 
+const SHEET_URL = "https://script.google.com/macros/s/AKfycbxXt2sR-PVJL069Uanh3iu2mUT5J80_iNaS1JQ9vkWyyPaSRh7ieGNfkynESY1VZHAd0A/exec"
+
 const startSock = async () => {
     const { state, saveCreds } = await useMultiFileAuthState('./auth');
     const sock = makeWASocket({
@@ -91,7 +93,7 @@ const startSock = async () => {
                     let keterangan_api = keterangan 
                     let keterangan_str =''
 
-                    axios.get(`https://script.google.com/macros/s/AKfycbw-2TeIUFPccvEnBh3xkPpG0p7lnjoYcyMhZuSWiRjVHrZuu_i-nBWKDs01ZjErBgTt/exec`)
+                    axios.get(`${SHEET_URL}`)
                     .then(async (response) => {
                         const dataCategory = response.data.data
                
@@ -99,6 +101,8 @@ const startSock = async () => {
                           'harian': 'Gaji',
                           'transfer': 'Kas',
                         }
+
+                        console.log(dataCategory)
                       
                         keterangan = keterangan.map(([key, value]) => {
                           const words = key.trim().split(' ');
@@ -146,7 +150,7 @@ const startSock = async () => {
                     });
 
                 } else if(msg.message.conversation.includes('!kategori')) {
-                    axios.get(`https://script.google.com/macros/s/AKfycbw-2TeIUFPccvEnBh3xkPpG0p7lnjoYcyMhZuSWiRjVHrZuu_i-nBWKDs01ZjErBgTt/exec`)
+                    axios.get(`${SHEET_URL}`)
                     .then(async (response) => {
                         const dataCategory = response.data.data
                         if(response.data.success){
