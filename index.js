@@ -2,7 +2,7 @@ const { DisconnectReason, useMultiFileAuthState } = require('baileys');
 const makeWASocket = require('baileys').default;
 const axios = require("axios");
 
-const SHEET_URL = "https://script.google.com/macros/s/AKfycbxXt2sR-PVJL069Uanh3iu2mUT5J80_iNaS1JQ9vkWyyPaSRh7ieGNfkynESY1VZHAd0A/exec"
+const SHEET_URL = "https://script.google.com/macros/s/AKfycbwgl1DqyQ0R67BO2_2sLaGx0C12QIL6xkqH4SsxGD2px0IaTaJTLtQS_S9_DC1jdUocmA/exec?"
 
 const startSock = async () => {
     const { state, saveCreds } = await useMultiFileAuthState('./auth');
