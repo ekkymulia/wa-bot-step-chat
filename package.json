@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon --ignore auth/ index.js"
+    "start": "nodemon --ignore auth/ index.js",
+    "clean-auth-lw": "rm -rf auth/* && echo authentikasi dan hubungan ke wa telah direset",
+    "clean-auth": "del /S /Q auth\\* && echo authentikasi dan hubungan ke wa telah direset"
   },
   "author": "ekky-surya",
   "license": "ISC",

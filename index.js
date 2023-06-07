@@ -21,10 +21,10 @@ const startSock = async () => {
                 startSock();
             }
         } else {
-            console.log("connection closed");
+            console.log("Koneksi dihentikan sementara, sambil menunggu pesan masuk");
         }
 
-        console.log("connection update ", update);
+        console.log("Koneksi terhubung kembali", update);
     });
 
     sock.ev.on('creds.update', saveCreds);
@@ -34,8 +34,9 @@ const startSock = async () => {
         if (!msg.key.fromMe && m.type === 'notify') {
             if (msg.message) {
                 if (msg.message.conversation.includes('Format Laporan Harian') && !msg.message.conversation.includes('Berhasil dimasukkan')) {
-                    console.log(msg.key.remoteJid);
-                    console.log('msg_data: ', msg.message.conversation);
+                    console.log('Pesan berformat terdeteksi:\n');
+                    console.log('Sender:' + msg.key.remoteJid);
+                    console.log('Pesan: ', msg.message.conversation);
 
                     const text = msg.message.conversation;
 
@@ -121,7 +122,7 @@ const startSock = async () => {
                           'transfer': 'Kas',
                         }
 
-                        console.log(dataCategory)
+                        console.log('data yang diterima:,\n' + dataCategory)
 
                         try{
                             keterangan = keterangan.map(([key, value]) => {
@@ -161,10 +162,10 @@ ${emptyData.join('\n')}`
                         }
 
                         console.log(data);
-    console.log(`${SHEET_URL}?tanggal=${tanggal}&cabang=${cabang}&barangTerjual=${barangTerjual == '' ? '' : barangTerjual}&retur=${retur == '' ? '' : retur}&barangMasuk=${barangMasuk == '' ? '' : barangMasuk}&keterangan=${keterangan_api}`)
+    // console.log(`${SHEET_URL}?tanggal=${tanggal}&cabang=${cabang}&barangTerjual=${barangTerjual == '' ? '' : barangTerjual}&retur=${retur == '' ? '' : retur}&barangMasuk=${barangMasuk == '' ? '' : barangMasuk}&keterangan=${keterangan_api}`)
                         axios.post(`${SHEET_URL}?tanggal=${tanggal}&cabang=${cabang}&barangTerjual=${barangTerjual == '' ? '' : barangTerjual}&retur=${retur == '' ? '' : retur}&barangMasuk=${barangMasuk == '' ? '' : barangMasuk}&keterangan=${keterangan_api}`)
                         .then(async (response) => {
-                            console.log(response.data);
+                            console.log('response google spreadsheet:\n', response.data);
                             if(response.data.success){
                                 await sock.sendMessage(msg.key.remoteJid, {
                                     text: `Berhasil dimasukkan, Cabang: ${cabang}\nFormat Laporan Harian\nTanggal: ${tanggal}\nCabang Toko: ${cabang}\nOmset: Rp.${data.omset}\nUang Keluar: Rp.${data.uangkeluar}\nUang Sisa: Rp.${data.uangsisa}\nJumlah Barang Terjual: ${barangTerjual == '' ? '0' : barangTerjual} PCS\nRetur: ${retur == '' ? '0' : retur} pcs\nBarang Masuk: ${barangMasuk == '' ? '0' : barangMasuk} pcs\nKeterangan Uang Keluar:\n${keterangan_api.map(([name, value]) => `${name}: Rp.${value}`).join('\n')}`
@@ -178,6 +179,7 @@ ${emptyData.join('\n')}`
                     });
 
                 } else if(msg.message.conversation.includes('!kategori')) {
+                    console.log('Pesan permintaan kategori terdeteksi:\n');
                     axios.get(`${SHEET_URL}`)
                     .then(async (response) => {
                         const dataCategory = response.data.data
@@ -192,10 +194,12 @@ ${emptyData.join('\n')}`
                         }
                     });
                 } else if(msg.message.conversation.includes('!format')){
+                    console.log('Pesan permintaan format terdeteksi:\n'); 
                     await sock.sendMessage(msg.key.remoteJid, {
                         text: `Format Laporan Harian \nTanggal: [tanggal] \nCabang Toko : [cabang] \nOmset : Rp.[nominal] \nUang Keluar :Rp.[nominal] \nUang Sisa :Rp.[nominal] \nJumlah Barang terjual : [nominal] PCS \nJumlah Retur: [nominal] PCS \nJumlah Barang Masuk: [nominal] PCS \nKeterangan Uang Keluar : \n1. [kategori] [keterangan]:Rp.[nominal] \n2. [kategori] [keterangan]:Rp.[nominal] \n3. [kategori] [keterangan]:Rp.[nominal] \n`
                     });  
                 } else if(msg.message.conversation.includes('!menu')) {
+                    console.log('Pesan permintaan lihat menu robot terdeteksi:\n');
                     await sock.sendMessage(msg.key.remoteJid, {
                         text: `Menu:\n !menu = untuk menampilkan menu\n !kategori = untuk menampilkan kategori\n !format = untuk menampilkan format`
                     });
@@ -203,7 +207,6 @@ ${emptyData.join('\n')}`
             }
         }
 
-        console.log('Received Message', JSON.stringify(msg));
     });
 };
 
